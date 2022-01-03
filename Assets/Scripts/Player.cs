@@ -73,7 +73,7 @@ public class Player : MovingObject
             animator.SetFloat("DirX", vector.x);
             animator.SetFloat("DirY", vector.y);
 
-            bool checkCollsionFlag = base.CheckCollsion();
+            bool checkCollsionFlag = base.CheckCollsion(layerMask);
             if (checkCollsionFlag)
                 break;
 

@@ -48,11 +48,11 @@ public class CameraControll : MonoBehaviour
 
     void LateUpdate()
     {
-        float lx = area.size.x * 0.5f - halfWidth;
-        float clampX = Mathf.Clamp(player.transform.position.x, -lx + area.center.x, lx + area.center.x);
+        float lx = area._size.x * 0.5f - halfWidth;
+        float clampX = Mathf.Clamp(player.transform.position.x, -lx + area._center.x, lx + area._center.x);
 
-        float ly = area.size.y * 0.5f - halfHeight;
-        float clampY = Mathf.Clamp(player.transform.position.y, -ly + area.center.y, ly + area.center.y);
+        float ly = area._size.y * 0.5f - halfHeight;
+        float clampY = Mathf.Clamp(player.transform.position.y, -ly + area._center.y, ly + area._center.y);
         //transform.position = new Vector3(player.transform.position.x, player.transform.position.y, transform.position.z);
 
         //float clampX = Mathf.Clamp(player.transform.position.x, minBound.x + halfWidth, maxBound.x - halfWidth);

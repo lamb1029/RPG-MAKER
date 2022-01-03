@@ -25,6 +25,7 @@ public class NPC : MovingObject
     {
         animator = GetComponent<Animator>();
         StartCoroutine("MoveCoroutine");
+        layerMask = (1 << 8) | (1 << 10);
     }
 
     public void SetMove()
@@ -43,26 +44,10 @@ public class NPC : MovingObject
         {
             for(int i = 0; i < npc.dir.Length; i++)
             {
-                 switch(npc.frequency)
-                {
-                    case 1:
-                        yield return new WaitForSeconds(4f);
-                        break;
-                    case 2:
-                        yield return new WaitForSeconds(3f);
-                        break;
-                    case 3:
-                        yield return new WaitForSeconds(2f);
-                        break;
-                    case 4:
-                        yield return new WaitForSeconds(1f);
-                        break;
-                    case 5:
-                        break;
-                }
+                 
 
                 yield return new WaitUntil(() => NPCcanMove);
-                base.Move(npc.dir[i], npc.frequency);
+                base.Move(npc.dir[i], npc.frequency, layerMask);
 
                 if (i == npc.dir.Length - 1)
                     i = -1;

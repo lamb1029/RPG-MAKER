@@ -14,13 +14,32 @@ public class MovingObject : MonoBehaviour
     public LayerMask layerMask;
     protected bool NPCcanMove = true;
 
-    protected void Move(string _dir, int _frequency)
+    protected void Move(string _dir, int _frequency, int _layerMask)
     {
-        StartCoroutine(MoveCoroutine(_dir, _frequency));
+        StartCoroutine(MoveCoroutine(_dir, _frequency, _layerMask));
     }
-    IEnumerator MoveCoroutine(string _dir, int _frequency)
+    IEnumerator MoveCoroutine(string _dir, int _frequency, int _layerMask)
     {
-        NPCcanMove = false;
+        switch (_frequency)
+        {
+            case 1:
+                yield return new WaitForSeconds(4f);
+                break;
+            case 2:
+                yield return new WaitForSeconds(3f);
+                break;
+            case 3:
+                yield return new WaitForSeconds(2f);
+                break;
+            case 4:
+                yield return new WaitForSeconds(1f);
+                break;
+            case 5:
+                break;
+        }
+        
+
+        //NPCcanMove = false;
         vector.Set(0, 0, vector.z);
 
         switch (_dir)
@@ -41,7 +60,24 @@ public class MovingObject : MonoBehaviour
 
         animator.SetFloat("DirX", vector.x);
         animator.SetFloat("DirY", vector.y);
+
+        while(true)
+        {
+            bool checkCollsionFlag = CheckCollsion(_layerMask);
+            if (checkCollsionFlag)
+            {
+                animator.SetBool("Walking", false);
+                yield return new WaitForSeconds(1f);
+            }
+            else
+            {
+                break;
+            }
+        }
+
         animator.SetBool("Walking", true);
+
+        //BoxCollider.offset
 
         while (currentWalkCount < walkCount)
         {
@@ -55,12 +91,12 @@ public class MovingObject : MonoBehaviour
         NPCcanMove = true;
     }
 
-    protected bool CheckCollsion()
+    protected bool CheckCollsion(int _layerMask)
     {
         RaycastHit2D hit;
         Vector2 start = transform.position; //캐릭터의 현재 위치
         Vector2 end = start + new Vector2(vector.x * speed * walkCount, vector.y * speed * walkCount); // 캐릭터가 이동하고자 하는 위치
-        hit = Physics2D.Linecast(start, end, layerMask);
+        hit = Physics2D.Linecast(start, end, _layerMask);
 
         if (hit.transform != null)
             return true;
