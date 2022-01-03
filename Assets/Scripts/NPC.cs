@@ -23,9 +23,10 @@ public class NPC : MovingObject
     // Start is called before the first frame update
     void Start()
     {
+        box = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
-        StartCoroutine("MoveCoroutine");
-        layerMask = (1 << 8) | (1 << 10);
+        queue = new Queue<string>();
+        StartCoroutine(MoveCoroutine());
     }
 
     public void SetMove()
@@ -35,7 +36,7 @@ public class NPC : MovingObject
 
     public void SetNotMove()
     {
-
+        StopAllCoroutines();
     }
 
     IEnumerator MoveCoroutine()
@@ -44,10 +45,9 @@ public class NPC : MovingObject
         {
             for(int i = 0; i < npc.dir.Length; i++)
             {
-                 
+                yield return new WaitUntil(() => queue.Count < 2);
 
-                yield return new WaitUntil(() => NPCcanMove);
-                base.Move(npc.dir[i], npc.frequency, layerMask);
+                base.Move(npc.dir[i], npc.frequency);
 
                 if (i == npc.dir.Length - 1)
                     i = -1;

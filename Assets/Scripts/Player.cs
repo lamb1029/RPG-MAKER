@@ -7,7 +7,7 @@ public class Player : MovingObject
     static public Player instance;
     public string transferMapName;
 
-    private BoxCollider2D box;
+    
     
     [SerializeField]
     private float runSpeed;
@@ -15,21 +15,23 @@ public class Player : MovingObject
 
     private bool canMove = true;
     private bool running = false;
-
-    void Start()
+    private void Awake()
     {
         if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(this.gameObject);
-            box = GetComponent<BoxCollider2D>();
-            animator = GetComponent<Animator>();
-            layerMask = (1 << 8) | (1 << 9);
         }
         else
         {
             Destroy(this.gameObject);
         }
+    }
+    void Start()
+    {
+        queue = new Queue<string>();
+        box = GetComponent<BoxCollider2D>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -73,25 +75,22 @@ public class Player : MovingObject
             animator.SetFloat("DirX", vector.x);
             animator.SetFloat("DirY", vector.y);
 
-            bool checkCollsionFlag = base.CheckCollsion(layerMask);
+            bool checkCollsionFlag = base.CheckCollsion();
             if (checkCollsionFlag)
                 break;
 
             animator.SetBool("Walking", true);
 
+            box.offset = new Vector2(vector.x * 0.7f * speed * walkCount, vector.y * 0.7f * speed * walkCount);
+
             while (currentWalkCount < walkCount)
             {
-                if (vector.x != 0)
-                {
-                    transform.Translate(vector.x * (speed + applyRunSpeed), 0, 0);
-                }
-                else if (vector.y != 0)
-                {
-                    transform.Translate(0, vector.y * (speed + applyRunSpeed), 0);
-                }
+                transform.Translate(vector.x * (speed + applyRunSpeed), vector.y * (speed + applyRunSpeed), 0);
                 if (running)
                     currentWalkCount++;
                 currentWalkCount++;
+                if (currentWalkCount == 12)
+                    box.offset = Vector2.zero;
                 yield return new WaitForSeconds(0.01f);
             }
             currentWalkCount = 0;

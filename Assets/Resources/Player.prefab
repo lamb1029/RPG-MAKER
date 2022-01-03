@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3917559377636206560}
   - component: {fileID: 3917559377636206561}
   - component: {fileID: 789077725}
-  m_Layer: 10
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -164,8 +164,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46e28edeb9cac324c83d13cdb96480f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterName: Player
   speed: 2.4
   walkCount: 20
+  animator: {fileID: 0}
   layerMask:
     serializedVersion: 2
     m_Bits: 256

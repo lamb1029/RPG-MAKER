@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7177553865356559022}
   - component: {fileID: 7177553865356559021}
   - component: {fileID: 3023138127099089842}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: NPC1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,6 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 590709db4d3f28a43bc291c22beb610c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterName: NPC1
   speed: 2.4
   walkCount: 20
   animator: {fileID: 7177553865356559021}
@@ -105,11 +106,7 @@ MonoBehaviour:
     m_Bits: 256
   npc:
     NPCMove: 0
-    dir:
-    - DOWN
-    - DOWN
-    - UP
-    - UP
+    dir: []
     frequency: 5
 --- !u!95 &7177553865356559021
 Animator:
@@ -154,5 +151,5 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 45, y: 45}
+  m_Size: {x: 48, y: 48}
   m_EdgeRadius: 0
