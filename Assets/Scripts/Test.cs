@@ -2,36 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class TestMove
+public class test : MonoBehaviour
 {
-    public string name;
-    public string dir;
-}
+    private OrderManager theorder;
+    private NumberSystem thenumber;
 
-public class Test : MonoBehaviour
-{
-    //public TestMove[] move;
-    public string dir;
-    private OrderManager theOrder;
+    public int correct;
+    public bool flag;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        theOrder = FindObjectOfType<OrderManager>();
+        thenumber = FindObjectOfType<NumberSystem>();
+        theorder = FindObjectOfType<OrderManager>();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
-
-        if(collision.gameObject.name == "Player")
+        if(!flag)
         {
-            theOrder.PreLoadCharacter();
-            //for(int i = 0; i < move.Length; i++)
-            //{
-            //    theOrder.Move(move[i].name, move[i].dir);
-            //}
-            theOrder.Turn("NPC1", dir);
+            StartCoroutine(A());
         }
     }
+
+    IEnumerator A()
+    {
+        flag = true;
+        theorder.NotMove();
+        thenumber.ShowNumber(correct);
+        yield return new WaitUntil(() => !thenumber.activated);
+        theorder.Move();
+    }
+
 }

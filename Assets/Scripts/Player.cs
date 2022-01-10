@@ -7,14 +7,17 @@ public class Player : MovingObject
     static public Player instance;
     public string transferMapName;
 
-    
-    
+    public string walkSound_1;
+
     [SerializeField]
     private float runSpeed;
     private float applyRunSpeed;
 
     private bool canMove = true;
     private bool running = false;
+
+    public bool notMove = false;
+
     private void Awake()
     {
         if (instance == null)
@@ -32,11 +35,12 @@ public class Player : MovingObject
         queue = new Queue<string>();
         box = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
+        theAudio = FindObjectOfType<AudioManager>();
     }
 
     void Update()
     {
-        if (canMove == true)
+        if (canMove && !notMove)
         {
             if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
             {
@@ -53,7 +57,7 @@ public class Player : MovingObject
 
     IEnumerator MoveCoroutine()
     {
-        while (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+        while (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0 && !notMove)
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
@@ -80,6 +84,17 @@ public class Player : MovingObject
                 break;
 
             animator.SetBool("Walking", true);
+
+            int temp = Random.Range(1, 2);
+            switch (temp)
+            {
+                case 1:
+                    theAudio.Play(walkSound_1);
+                    break;
+                case 2:
+                    theAudio.Play(walkSound_1);
+                    break;
+            }
 
             box.offset = new Vector2(vector.x * 0.7f * speed * walkCount, vector.y * 0.7f * speed * walkCount);
 

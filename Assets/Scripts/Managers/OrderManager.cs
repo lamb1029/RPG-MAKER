@@ -42,6 +42,16 @@ public class OrderManager : MonoBehaviour
         }
     }
 
+    public void NotMove()
+    {
+        thePlayer.notMove = true;
+    }
+
+    public void Move()
+    {
+        thePlayer.notMove = false;
+    }
+
     public void Turn(string _name, string _dir)
     {
         for (int i = 0; i < characters.Count; i++)

@@ -17,6 +17,7 @@ public class MovingObject : MonoBehaviour
     private bool notCoroutine = false;
     protected BoxCollider2D box;
     public Queue<string> queue;
+    protected AudioManager theAudio;
 
 
     public void Move(string _dir, int _frequency = 5)
