@@ -27,6 +27,18 @@ public class DatabaseManager : MonoBehaviour
 
     public List<Item> itemList = new List<Item>();
 
+    public void UseItem(int _itemID)
+    {
+        switch (_itemID)
+        {
+            case 10001:
+                break;
+            case 10002:
+                break;
+        }
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {

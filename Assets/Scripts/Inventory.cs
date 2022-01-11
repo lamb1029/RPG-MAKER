@@ -10,6 +10,7 @@ public class Inventory : MonoBehaviour
     private DatabaseManager thedatabase;
     private OrderManager theOrder;
     private AudioManager theAudio;
+    private OkOrCancel OOC;
 
     public string key_sound;
     public string enter_sound;
@@ -29,7 +30,9 @@ public class Inventory : MonoBehaviour
 
     public GameObject go;
     public GameObject[] selectedTabImages;
-    public GameObject selection_Window;
+    public GameObject go_OOC;
+    public GameObject prefeb_floating_item;
+
 
     private int selectedItem;
     private int selectedtab;
@@ -48,6 +51,7 @@ public class Inventory : MonoBehaviour
         thedatabase = FindObjectOfType<DatabaseManager>();
         theOrder = FindObjectOfType<OrderManager>();
         theAudio = FindObjectOfType<AudioManager>();
+        OOC = FindObjectOfType<OkOrCancel>();
         inventoryItemList = new List<Item>();
         inventoryTabList = new List<Item>();
         slots = tf.GetComponentsInChildren<InventorySlot>();
@@ -57,13 +61,17 @@ public class Inventory : MonoBehaviour
     {
         for (int i = 0; i < thedatabase.itemList.Count; i++)
         {
-            if(_itemID == thedatabase.itemList[i].itemID)
+            if (_itemID == thedatabase.itemList[i].itemID)
             {
-                for(int j = 0; j < inventoryItemList.Count; j++)
+                var clone = Instantiate(prefeb_floating_item, Player.instance.transform.position, Quaternion.Euler(Vector3.zero));
+                clone.GetComponent<FloatingText>().text.text = thedatabase.itemList[i].itemName + " " + _count + "개 획득!";
+                clone.transform.SetParent(transform);
+
+                for (int j = 0; j < inventoryItemList.Count; j++)
                 {
-                    if(inventoryItemList[j].itemID == _itemID)
+                    if (inventoryItemList[j].itemID == _itemID)
                     {
-                        if(inventoryItemList[j].itemType == Item.ItemType.use)
+                        if (inventoryItemList[j].itemType == Item.ItemType.use)
                         {
                             inventoryItemList[j].itemCount += _count;
                         }
@@ -72,7 +80,7 @@ public class Inventory : MonoBehaviour
                             inventoryItemList.Add(thedatabase.itemList[i]);
                         }
                         return;
-                        
+
                     }
                 }
                 inventoryItemList.Add(thedatabase.itemList[i]);
@@ -85,7 +93,7 @@ public class Inventory : MonoBehaviour
 
     public void RemoveSlot()
     {
-        for(int i = 0; i < slots.Length; i++)
+        for (int i = 0; i < slots.Length; i++)
         {
             slots[i].RemoveItem();
             slots[i].gameObject.SetActive(false);
@@ -103,7 +111,7 @@ public class Inventory : MonoBehaviour
         StopAllCoroutines();
         Color color = selectedTabImages[selectedtab].GetComponent<Image>().color;
         color.a = 0f;
-        for(int i = 0; i < selectedTabImages.Length; i++)
+        for (int i = 0; i < selectedTabImages.Length; i++)
         {
             selectedTabImages[i].GetComponent<Image>().color = color;
         }
@@ -116,7 +124,7 @@ public class Inventory : MonoBehaviour
         Color color = selectedTabImages[0].GetComponent<Image>().color;
         while (tabActivated)
         {
-            while(color.a < 0.5f)
+            while (color.a < 0.5f)
             {
                 color.a += 0.03f;
                 selectedTabImages[selectedtab].GetComponent<Image>().color = color;
@@ -139,10 +147,10 @@ public class Inventory : MonoBehaviour
         RemoveSlot();
         selectedItem = 0;
 
-        switch(selectedtab)
+        switch (selectedtab)
         {
             case 0:
-                for(int i = 0; i < inventoryItemList.Count; i++)
+                for (int i = 0; i < inventoryItemList.Count; i++)
                 {
                     if (Item.ItemType.use == inventoryItemList[i].itemType)
                         inventoryTabList.Add(inventoryItemList[i]);
@@ -171,7 +179,7 @@ public class Inventory : MonoBehaviour
                 break;
         } //탭에 따른 아이템 분류 후 inventoryTabList에 추가
 
-        for(int i = 0; i < inventoryTabList.Count; i++)
+        for (int i = 0; i < inventoryTabList.Count; i++)
         {
             slots[i].gameObject.SetActive(true);
             slots[i].AddItem(inventoryTabList[i]);
@@ -187,7 +195,7 @@ public class Inventory : MonoBehaviour
         {
             Color color = slots[0].selected.GetComponent<Image>().color;
             color.a = 0f;
-            for(int i = 0; i < inventoryTabList.Count; i++)
+            for (int i = 0; i < inventoryTabList.Count; i++)
                 slots[i].selected.GetComponent<Image>().color = color;
             Description.text = inventoryTabList[selectedItem].itemDescription;
             StartCoroutine(SelectedItemEffect());
@@ -221,12 +229,12 @@ public class Inventory : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!stopKeyInput)
+        if (!stopKeyInput)
         {
-            if(Input.GetKeyDown(KeyCode.I))
+            if (Input.GetKeyDown(KeyCode.I))
             {
                 activated = !activated;
-                if(activated)
+                if (activated)
                 {
                     theAudio.Play(open_sound);
                     theOrder.NotMove();
@@ -247,11 +255,11 @@ public class Inventory : MonoBehaviour
                 }
             }
 
-            if(activated)
+            if (activated)
             {
-                if(tabActivated)
+                if (tabActivated)
                 {
-                    if(Input.GetKeyDown(KeyCode.RightArrow))
+                    if (Input.GetKeyDown(KeyCode.RightArrow))
                     {
                         if (selectedtab < selectedTabImages.Length - 1)
                             selectedtab++;
@@ -269,7 +277,7 @@ public class Inventory : MonoBehaviour
                         theAudio.Play(key_sound);
                         SelectedTab();
                     }
-                    else if(Input.GetKeyDown(KeyCode.Z))
+                    else if (Input.GetKeyDown(KeyCode.Z))
                     {
                         StopAllCoroutines();
                         theAudio.Play(enter_sound);
@@ -284,9 +292,9 @@ public class Inventory : MonoBehaviour
                     }
                 } //탭 활성화시 키입력
 
-                else if(itemActivated)
+                else if (itemActivated)
                 {
-                    if(inventoryTabList.Count > 0)
+                    if (inventoryTabList.Count > 0)
                     {
                         if (Input.GetKeyDown(KeyCode.DownArrow))
                         {
@@ -331,6 +339,7 @@ public class Inventory : MonoBehaviour
                                 theAudio.Play(enter_sound);
                                 stopKeyInput = true;
                                 //소모품 사용 선택지 호출
+                                StartCoroutine(OOCCoroutine());
                             }
                             else if (selectedtab == 1)
                             {
@@ -356,5 +365,32 @@ public class Inventory : MonoBehaviour
                     preventExec = false;
             }
         }
+    }
+
+    IEnumerator OOCCoroutine()
+    {
+        go_OOC.SetActive(true);
+        OOC.ShowTwoChoice("사용", "취소");
+        yield return new WaitUntil(() => !OOC.activated); //선택지 고를때까지 대기
+        if (OOC.GetResult())
+        {
+            for (int i = 0; i < inventoryItemList.Count; i++)
+            {
+                if (inventoryItemList[i].itemID == inventoryTabList[selectedItem].itemID)
+                {
+                    thedatabase.UseItem(inventoryItemList[i].itemID);
+
+                    if (inventoryItemList[i].itemCount > 1)
+                        inventoryItemList[i].itemCount--;
+                    else
+                        inventoryItemList.RemoveAt(i);
+
+                    ShowItem();
+                    break;
+                }
+            }
+        }
+        stopKeyInput = false;
+        go_OOC.SetActive(false);
     }
 }
